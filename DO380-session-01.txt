@@ -1,0 +1,339 @@
+### Point-01:-
+
+# Product Name - Red Hat OpenShift 
+1-# Cloud services editions:-
+ - Red Hat OpenShift Service on AWS      [Platform=AWS-Cloud, POC=Amazone ; Backed=RH]
+ - Microsoft Azure Red Hat OpenShift     [Platform=Azure-Cloud, POC=MS ; Backed=RH]
+ - Red Hat OpenShift Dedicated           [Platform=AWS/GCP-Cloud, POC=RH ; Backed=AWS/GCP]
+ - Red Hat OpenShift on IBM Cloud        [Platform=IBM, POC=IBM ; Backed=RH]
+ 
+ 
+2-# Self-managed editions:-
+ - Red Hat OpenShift Kubernetes Engine       [basic]
+ - Red Hat OpenShift Container Platform      [Standard]
+ - Red Hat OpenShift Platform Plus           [Add on Services]
+ - Red Hat OpenShift Virtualization Engine   [Virtualization]
+
+3-#Services & add-ons
+ - Red Hat OpenShift AI
+ - Red Hat OpenShift Lightspeed
+ - Red Hat OpenShift Virtualization
+ - Red Hat Quay
+ - Red Hat Advanced Cluster Management for Kubernetes
+ - Red Hat Advanced Cluster Security for Kubernetes
+ - Red Hat Advanced Developer Suite
+ - Red Hat OpenShift Consulting
+
+
+# Red Hat OpenShift Training modules:-
+https://www.redhat.com/en/resources/openshift-skill-paths-datasheet
+Administrator track - DO180/280/380 
+ - Red Hat OpenShift Administration III: Scaling Deployments in the Enterprise (DO380)
+ - Red Hat Certified Specialist in OpenShift Automation and Integration Exam (EX380)
+ 
+https://www.redhat.com/en/services/certification/red-hat-certified-openshift-architect
+https://www.redhat.com/en/services/certification/red-hat-certified-openshift-architect?pfe-w2hv9l0fo=exams
+
+Red Hat openshift installation 
+https://docs.redhat.com/en/documentation/openshift_container_platform/4.13
+
+***********************************************************************************************************
+### Point-02:-
+
+ROL - Red Hat Online Learning 
+https://rol.redhat.com 
+Red Hat login/Password 
+
+- LAB access 
+- BookShelf
+
+
+***********************************************************************************************************
+9:30am to 11:00am   - Session01 
+11:00am to 11:20am  - Tea Break 
+11:20am to 1pm      - Session02 
+1:00pm  to 1:45pm   - Lunch Break (5/10+ mins)
+2:00pm to 3:30pm    - Session03 
+3:30pm to 3:45pm    - Tea Break 
+3:45pm to 5:30pm    - Session04 
+
+### Point-03:-
+Classroom Environment:-
+
+1-) Users details:-
+   - Login to VMs/Servers:-
+     student/student  [ student having sudo access ]
+	 root/redhat 
+
+   - Login to Red Hat OpenShift cluster (OCP):-
+     w.r.t CLI login to OCP cluster.
+	 username 
+     password 
+     API url	 
+
+     admin/redhatocp       [cluster-admin access]
+	 developer/developer   [ Normal OCP account ]
+	 
+	 kubeadmin/kubeadmin-password  [ on utility.lab.example.com ; location - /home/lab/ocp4/auth/kubeadmin-password ]
+	 $ ssh root@utility.lab.example.com 
+	 # cd /home/lab/ocp4/auth/
+	 # ls 
+	 kubeconfig kubeadmin-password 
+	 
+	 # cat kubeadmin-password
+	 shadlksjdlfksajlk
+	 
+	 # cat kubeconfig | grep server 
+	 https://api.ocp4.example.com:6443 
+	 
+	 **************************
+	 API URL - https://api.clusterName.baseDomain:6443 
+	 clusterName - ocp4-blr ; ocp4-del ; ocp4-mum
+	 BaseDomain  - citi.com 
+	 
+	 API URL - https://api.ocp4-blr.citi.com:6443 
+	 API URL - https://api.ocp4-del.citi.com:6443 
+	 API URL - https://api.ocp4-mum.citi.com:6443 
+	 
+	 $ ssh root@utility
+	 # cd /home/lab/ocp4 
+	 # mkdir dir
+	 # cp -rpv install-config.yaml.bkp dir/
+	 # cp -rpv openshift-install dir/
+	 # ./openshift-install create --help | egrep 'manifests|ignition'
+     # Create manifests & ignition.
+	 	 
+	 **************************
+	 
+	 How to login to OCP cluster:-
+	 $ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+
+     	 
+	 
+2-) Network/Domain details:-
+        N/W name                CIDR range              Domain Name 
+     Student Network      -    172.25.250.0/24          lab.example.com     [Jump server gateway network]
+	 cluster Network      -    192.168.50.0/24          ocp4.example.com    [Cluster Network ]
+	 Classroom Network    -    172.25.254.0/24          example.com         [Internet access/intra network ]
+	 
+	 
+	 
+3-) VMs/Servers details:-
+    - workstation.lab.example.com   [jump server - used for login to OCP cluster via CLI/Web Console]
+	- utility.lab.example.com       [Connect student network to cluster network ; imp services - DNS/HAproxy/DHCP/PXE/Apache etc]
+	- bastion.lab.example.com       [Connect student network to Classroom network - For internet access]
+	- classroom.example.com         [Connect to internal for quay.io/github.com/registry.redhat.io etc ]
+	
+	- ceph.ocp4.example.com         [ Storage node ]
+	- registry.ocp4.example.com     [ registry server ]
+	- idm.ocp4.example.com          [ LDAP server for authentication - Do not involve here ]
+	- rhds.ocp4.example.com         [ Used for LAB and handon ; LDAP server for authentication ]
+	- sso.ocp4.example.com          [ OpenID Connect - OIDC ]
+
+    - master01-03.ocp4.example.com   [ OCP master node - k8s/ocp services running ]
+	- worker01-03.ocp4.example.com   [ OCP worker node - End user application Eg: BookMyShow; citi Bank services ]
+	
+Lab-01###
+- Login to Workstation via console [Click on "Open Console"]
+- Login to OCP cluster via CLI (oc - openshift-client).
+  $ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443 
+  $ oc whoami 
+  $ oc version 
+  $ oc get clusterversion 
+  $ oc get nodes 
+  $ oc debug node/master01 
+  # chroot /hosts
+  # hostname -s 
+  # hostname -d 
+  # hostname -f 
+  # cat /etc/redhat-rele<Tab>
+  $ oc whoami --show-console 
+  https://console-openshift-console.apps.ocp4.example.com 
+  
+  FYI- https://appName-namespaceName.apps.clusterName.baseDomain
+  appName=console 
+  namespaceName=openshift-console 
+  clusterName=ocp4
+  baseDomain=example.com 
+  
+
+######################
+Unit-1# Authentication and Identity Management:-
+- Authentication - Via idP (identity Provider = htpasswd, LDAP, OpenIDConnect "OIDC"  etc). 
+- Authorization  - Once authentication done(verifed via kube-apiserver) the authorization given by oauth services.
+
+- The OpenShift OAuth Server and Identity Providers 
+- LDAP Authentication and Group Synchronization 
+- Automate LDAP Group Synchronization 
+- OIDC Authentication and Group Claims 
+- Solve User Sync Conflicts 
+- Token and Client Certificate Authentication with kubeconfig Files 
+ 
+
+- The OpenShift OAuth Server and Identity Providers :- 
+Task-01:-
+user1-5/redhat123  ; secretname=secret-htpasswd-sre  ; idP=htpasswd-sre-team
+user6-10/redhat123  ; secretname=secret-htpasswd-app01  ; idP=htpasswd-app01-team 
+
+Task-02:-
+Groups 
+- sre_grp   - user1-5              [Cluster-admin ]
+- app01_grp - user6-10/redhat123   [user6/7 - admin ; user8/9 - edit; user10-view w.r.t. namespaceName=ns-app01 
+
+- only cluster-admin can create project.
+
+later
+- user11/redhat - must be part of both idp=htpasswd-sre-team, htpasswd-app01-team  - Can create projects. [Not belongs to any group]
+
+###########
+
+task-01-SOlution-1# 
+Step-1:- Crete user's details file (user/passwd)
+htpasswd -c -B -b htpasswd-file user1 redhat 
+htpasswd  -B -b htpasswd-file user2 redhat 
+htpasswd  -B -b htpasswd-file user3 redhat 
+htpasswd  -B -b htpasswd-file user3 redhat 
+htpasswd  -B -b htpasswd-file user4 redhat 
+
+
+STep-2:- Create generic secret 
+oc create secret generic secret-htpasswd-sre  --from-file htpasswd=htpasswd<*> -n openshift-config 
+oc get secret  secret-htpasswd-sre  -n openshift-config
+secret-htpasswd-sre
+
+
+Step-03:-
+Updat eth oauth file.
+oc get oauth cluster -o yaml > oauth.yaml 
+
+vim oauth.yaml [UPdate the below lines for new idP).
+
+https://docs.redhat.com/en/documentation/openshift_container_platform/4.14/html-single/authentication_and_authorization/index
+
+  - name: htpasswd-sre-team                      [idP name can be anything ]
+    mappingMethod: claim 
+    type: HTPasswd
+    htpasswd:
+      fileData:
+        name: secret-htpasswd-sre                [SecretName - which create on step-2 ]
+		
+		
+Note: Same we need to perform for this - user6-10/redhat123  ; secretname=secret-htpasswd-app01  ; idP=htpasswd-app01-team 
+
+
+
+
+Task-02:-
+Groups 
+- sre_grp   - user1-5              [Cluster-admin ]
+- app01_grp - user6-10/redhat123   [user6/7 - admin ; user8/9 - edit; user10-view w.r.t. namespaceName=ns-app01 
+
+- only cluster-admin can create project.
+
+Task-02-Solution-#
+
+$ oc whoami  [cluster-admin] FYI - cluster-admin same as root user w.r.t Linux
+admin 
+$ oc adm groups new sre_grp 
+$ oc adm groups new app01_grp 
+$ oc adm groups add-users sre_grp user1 user1 user3 user4 user5   
+$ oc adm groups add-users app01_grp user6 user7 user8 user9 user10
+$ oc get groups | grep grp 
+
+
+Assign cluster-admin role to sre_grp 
+$ oc adm policy add-cluster-role-to-group cluster-admin sre_grp
+
+$ Creating namespace/project "ns-app01"
+$ oc new-project ns-app01 
+$ oc adm policy add-role-to-user admin user6 
+$ oc login -u user6 -p redhat123 https://api.ocp4.example.com:6443 
+$ oc get projects 
+ns-app01
+$ oc policy add-role-to-user edit user7
+$ oc policy add-role-to-user edit user8
+$ oc policy add-role-to-user edit user9
+$ oc policy add-role-to-user view user10
+
+$ oc describe clusterrolebindings  -> This is for clusterrole 
+$ oc describe rolebindings         -> Namespace/project  level 
+
+
+$ oc describe clusterrolebindings | grep self 
+$ oc describe clusterrolebindings self-provisioner 
+
+FYI - By default all user authenticated via "Oauth" are part of SystemGroup "system:authenticated:oauth"
+
+$ oc adm policy remove-cluster-role-from-group  self-provisioner system:authenticated:oauth
+
+
+
+*******************************
+later
+- user11/redhat - must be part of both idp=htpasswd-sre-team, htpasswd-app01-team  - Can create projects. [Not belongs to any group]
+
+$ oc extract secret --help |less 
+Example 
+
+$ oc extract secret/secret-htpasswd-sre --to=. -n openshift-config
+Get the file - htpasswd 
+$ htpasswd -B -b htpasswd user11 red-sre 
+$ cat htpasswd
+$ oc set data secret/secret-htpasswd-sre --from-file htpasswd=htpasswd -n openshift-config 
+$ watch oc get pods -n openshift-authentication -o wide 
+
+
+$ oc extract secret/secret-htpasswd-app01 --to=. -n openshift-config
+Get the file - htpasswd 
+$ htpasswd -B -b htpasswd user11 red-app 
+$ cat htpasswd
+$ oc set data secret/secret-htpasswd-app01 --from-file htpasswd=htpasswd -n openshift-config 
+$ watch oc get pods -n openshift-authentication -o wide 
+
+$ oc get oauth/cluster -o yaml > oauth-3.yaml 
+$ vim oauth-3
+
+mappingMethod: add (inplace of claim).
+
+$ watch oc get pods -n openshift-authentication -o wide 
+
+ 
+
+*********************** Explanation *************************
+1.1. The OpenShift OAuth Server and Identity Providers:-
+
+ Authentication in Kubernetes:-
+1-) OAuth access tokens
+
+- Oauth (Oauthv2.0 - in-build service) -> Openshift-apiserver (Proxy Server) -> Openshift-kube-apiserver -> etcd  
+- OAuth is a inbuild service w.r.t OCP, Once authentication completed by idP (htpasswd/LDAP/OIDC), then oauth provide token to authenticated user. Token also carry user's authorization. 
+
+
+2-) X.509 client certificates
+
+
+Authentication:-
+user (oc login) -> Openshift Oauth server -> idP (htpasswd/LDAP/OIDC) -> Openshift oauth server to oc login (respond) -> kubeconfig file.
+
+kubeconfig-file -> ~/.kube/config 
+
+
+
+
+ ldap://host:port/basedn?attribute?scope?filter
+ 
+ 
+ LDAP server - 
+ idm.ocp4.example.com    [admin/developer - from here]
+ rhds.ocp4.example.com 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+
+
+
