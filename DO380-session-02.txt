@@ -1,0 +1,202 @@
+#Quick Recap:-
+- Product - Red Hat OpenShift 
+- CLassroom Setup 
+  - users details     [w.r.t VMs - student/student;root/redht ;;; w.r.t OCP admin/redhatocp ; developer/developer] 
+  - VMs details       [workstation -> OCP cluster-master01-03/worker01-03]
+  - Network details   [*.lab.example.com ; *.ocp4.example.com ]
+  
+Lab-01:-
+- Adding users to OCP cluster via htpasswd idP (Identity Provider).
+- Updated users to existing secrets 
+- Oauth (version 2.0).
+- Oauth with htpasswd 
+  - htpasswd 
+  - secret (genric)
+  - oauth update 
+- Groups created/Users added to groups.
+- RBAC implementation (cluster-admin ; admin ; view; edit etc ).
+- LDAP integration.
+  URL - ldaps://rhds.ocp4.example.com/dc=example,dc=com?uid
+  Bind DN -  cn=Directory Manager
+  Base DN -  cn=Directory Manager
+  Bind Password - redhatocp 
+  
+
+Step-1:- Secret (generic -> key/value - literal) for LDAP password.
+Step-2:- ConfigMap (provide LDAP certificate)
+STep-3:- Update oauth file with all required information.
+
+https://docs.redhat.com/en/documentation/openshift_container_platform/4.14/html-single/authentication_and_authorization/index#identity-provider-ldap-CR_configuring-ldap-identity-provider
+
+
+ Web console - 
+ secret-name = ldap-do380-bindpass
+ configMap   = cm-do380-ldap-cert 
+ IdentityProvider = LDAP-DO380-Global-Tam
+ LDAP URL = ldaps://rhds.ocp4.example.com/dc=example,dc=com?uid
+ Bind DN = cn=Directory Manager
+ Bind password = redhatocp 
+ Email = mail 
+ 
+  lab start auth-ldap    [ It will generate certificate - self-sign certs ;; reset/restart LDAP server=rhds ]
+  
+##- Task:-  Automate LDAP Group Synchronization
+
+Step-01:-
+LDAP part done by using below workflow:-
+lab start auth-sync   [ It create manifest (kind: Pod/Secret etc]
+cd /home/student/DO380/lab/
+
+
+Step-02:-
+Verify ldap user login - kristendelgado ; and check the access (expected normal user ; no privilege ]
+oc whoami 
+oc auth can-i create users -A 
+oc auth can-i create node -A 
+
+Step-03:- Create project/namespace for automating the LDAP group sync.
+$ oc new-project auth-rhds-sync
+By Default:-
+oc get secret (6 secrets - two to each serviceaccount)
+oc get sa (3 default service account).
+
+Step-4:-
+Create serviceaccount - to automate the task (sometime task required high privilege so SA can do that).
+ oc create sa rhds-group-syncer   (SA name can be anything as per business/project description).
+
+STep-5:- Creating role (set of rules called role ; rule mean action)
+ oc create clusterrole rhds-group-syncer --verb get,list,create,update --resource groups
+ 
+Step-6:- Now cluster role binding [ assign any role/clusterrole to users/groups call rolebindings/clusterrolebindings]
+ oc adm policy add-cluster-role-to-user  rhds-group-syncer -z rhds-group-syncer
+                                           RoleName               ServierAccountName [z always used with SA]
+										   
+Step-7:- Create secret (bindPassword - belongs to LDAP)
+oc create secret generic rhds-secret --from-literal bindPassword='redhatocp'
+
+FYI- this secret create on same namespace=auth-rhds-sync.
+
+
+Step-8:- Create the RHDS synchronization configuration (kind: LDAPSyncConfig)
+
+Update below info:-
+bindDN: 'cn=Directory Manager'
+ bindPassword:
+  file: /etc/secrets/bindPassword
+ ca: /etc/config/ca.crt
+
+
+
+step-9:- Create ConfigMap on same namespace=auth-rhds-sync
+ oc create configmap rhds-config --from-file rhds-sync.yaml=rhds-sync.yaml,ca.crt=rhds_ca.crt
+
+Step-10:- Create the cron job for the automated schedule to synchronize groups every minute.
+oc create -f rhds-groups-cronjob.yaml
+
+Verify 
+watch oc get groups 
+
+Apply the cluster-admin role to the administrators group
+oc adm policy add-cluster-role-to-group  cluster-admin administrators
+
+FYI- "administrators" group is LDAP group, update on OCP cluster after LDAP Group Sync.
+
+##########################################################
+Red Hat OpenShift - Authentication & Authorization:-
+
+idP (Identity Providers)
+- htpasswd 
+- LDAP (LDAP integration & Group Sync).
+- Open ID Connect (OIDC). [ Examples:- PingIdentity ; IBM SSO, RedHat SSO etc ]
+- kubeconfig file method (certificate based authentiaction) 
+
+ OIDC in OpenShift:- 
+- An identity broker is a service that connects clients with IdPs (htpasswd,LDAP, OIDC etc).
+- As per Red Hat OpenShift - built-in OAuth server acts as an identity broker.
+- IdPs do authentication.
+- Once authentication completed the Oauth provide access via token (Token associated with RBAC).
+  FYI- Token load your profile w.r.t RBAC.
+  
+##- OIDC Authentication and Group Claims
+- Configure Red Hat Single Sign-On (SSO) as an OIDC identity provider (IdP) for OpenShift.
+- Synchronize users and groups from Red Hat SSO to OpenShift.
+
+###############
+3:30 to 4:15 (30 mins):-
+
+### - Token and Client Certificate Authentication with kubeconfig Files:-
+idP (Identity Providers)
+- htpasswd 
+- LDAP (LDAP integration & Group Sync).
+- Open ID Connect (OIDC). [ Examples:- PingIdentity ; IBM SSO, RedHat SSO etc ] - GE pending 
+- kubeconfig file method (certificate based authentiaction) - 
+
+#- Token and Client Certificate Authentication with kubeconfig Files
+
+HEALTHROBOT_TOKEN=$(oc create token -n auth-tls health-robot --duration 604800s)
+
+oc config set-credentials health-robot --token $HEALTHROBOT_TOKEN --kubeconfig robot-cert/health-robot.config
+
+oc config set-cluster $(oc config view -o jsonpath='{.clusters[0].name}') --server https://api.ocp4.example.com:6443 --kubeconfig robot-cert/health-robot.config
+
+
+oc config set-context health-robot --cluster $(oc config view -o jsonpath='{.clusters[0].name}') --namespace auth-tls --user health-robot --kubeconfig robot-cert/health-robot.config
+
+ oc config set-cluster $(oc config view -o jsonpath='{.clusters[0].name}') --server https://api.ocp4.example.com:6443 --kubeconfig robot-cert/health-robot.config
+ 
+ 
+ oc config set-context health-robot --cluster $(oc config view -o jsonpath='{.clusters[0].name}') --namespace auth-tls --user health-robot --kubeconfig robot-cert/health-robot.config
+ 
+ 
+  openssl req -newkey rsa:4096 -nodes -keyout tls.key -subj "/O=backdoor-administrators/CN=admin-backdoor" -out admin-cert/admin-backdoor-auth.csr
+  
+################
+ oc config set-credentials admin-backdoor --client-certificate admin-cert/admin-backdoor-access.crt --client-key tls.key --embed-certs --kubeconfig admin-cert/admin-backdoor.config
+ 
+  openssl s_client -showcerts -connect api.ocp4.example.com:6443 </dev/null 2>/dev/null|openssl x509 -outform PEM > ocp-apiserver-cert.crt
+ 
+  oc config set-cluster $(oc config view -o jsonpath='{.clusters[0].name}') --certificate-authority ocp-apiserver-cert.crt --embed-certs=true --server https://api.ocp4.example.com:6443 --kubeconfig admin-cert/admin-backdoor.config
+ 
+ 
+ 
+ oc config set-context admin-backdoor --cluster $(oc config view -o jsonpath='{.clusters[0].name}') --namespace default --user admin-backdoor --kubeconfig admin-cert/admin-backdoor.config
+ 
+ 
+
+ oc config use-context admin-backdoor --kubeconfig admin-cert/admin-backdoor.config
+ 
+================
+Unit-2-# Backup, Restore, and Migration of Applications with OADP
+
+https://docs.redhat.com/en/documentation/openshift_container_platform/4.13/html/backup_and_restore/index
+
+- Export and Import Application Data and Settings
+- OADP Operator Deployment and Features 
+- Backup and Restore with OADP
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
