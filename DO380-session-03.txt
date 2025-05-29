@@ -1,0 +1,118 @@
+#- Unit-1:- Authentication and Identity Management
+- The OpenShift OAuth Server and Identity Providers - IdP=htpasswd 
+- LDAP Authentication and Group Synchronization     - IdP=LDAP
+- Automate LDAP Group Synchronization               - Auto Sync enabled via cron jobs 
+- OIDC Authentication and Group Claims              - Enabled OpenIDConnect via RHSSO 
+- Solve User Sync Conflicts                         - Use case w.r.t OIDC 
+- Token and Client Certificate Authentication       - Enabled client certificate for auditor/backdoor admin.
+  with kubeconfig Files
+  
+#- Unit-2:-  Backup, Restore, and Migration of Applications with OADP
+-  Export and Import a Kubernetes Application 
+
+- Kubernetes resources that define the application and its settings. [pod,svc,pv,pvc,route,deployment,statefulSet etc]
+- Container images in the internal registry that containers of this application use. [internal image - ns=openshift]
+- Data that is stored in persistent volumes or object storage for a stateful application. [pvc, pv, & StorageClass].
+
+- SOlution solution (Native).
+ • OpenShift API for Data Protection [OADP]
+ • Veeam Kasten K10
+ • Storware Backup and Recovery
+ • IBM Spectrum Protect Plus
+ • Pure Storage Portworx Backup
+ 
+
+- Deploy application/Database.
+WorkLoad:-
+-1# pod/container 
+-2# replicaSet/replicationcontroller 
+-3# deployment/DeploymentConfig (dc)/statefulSet/DaemonSet etc 
+
+Networking:-
+-4# services (svc)
+-5# route (http/https-edge/passthrough/re-encryption)
+-6# NetworkPolicy 
+
+Storage:-
+-7# pv
+-8# pvc 
+-9# sc (storageClass)
+
+-10# secret 
+-11# configMap 
+
+Example:-
+https://etherpad-production.apps.ocp4.example.com
+
+
+
+oc get pvc etherpad -o yaml | yq d - metadata.annotations | yq d - metadata.creationTimestamp | yq d - metadata.namespace | yq d - metadata.finalizers | yq d - metadata.resourceVersion | yq d - metadata.uid | yq d - spec.volumeName | yq d - status > 01-pvc.yml
+
+
+
+ oc get deploy etherpad -oyaml | yq d - metadata.annotations | yq d - metadata.creationTimestamp | yq d - metadata.namespace  | yq d - metadata.resourceVersion   | yq d - metadata.uid | yq d - metadata.generation | yq d - status > production/02-deployment.yml
+
+
+ oc get svc etherpad -oyaml | yq d - metadata.annotations | yq d - metadata.creationTimestamp | yq d - metadata.namespace | yq d - metadata.resourceVersion | yq d - metadata.uid | yq d - spec.clusterIP* | yq d - status > production/03-service.yml
+
+
+
+ oc get route etherpad -oyaml | yq d - metadata.annotations | yq d - metadata.creationTimestamp | yq d - metadata.namespace | yq d - metadata.resourceVersion | yq d - metadata.uid | yq d - spec.host | yq d - status > production/04-route.yml
+
+
+ oc patch configs.imageregistry.operator.openshift.io/cluster --patch '{"spec":{"defaultRoute":true}}' --type merge
+ 
+#########
+## Backup and Restore with OADP:-
+- Back up and restore an OpenShift project.
+- Schedule a backup of an OpenShift project.
+- Remove previous backups.
+
+
+- namespace
+- deployments
+- configmaps
+- secrets
+- pvc
+- pv
+- services
+
+#########
+Unit-3-  Cluster Partitioning:-
+- Node Pools
+- Node Configuration with the Machine
+- Configuration Operator 
+- Node Configuration with Special Purpose Operators 
+
+ 4000k (7-8 clusters)
+ 
+ 500 worker nodes 
+ 30 nodes - payment 
+ 80 nodes - UI 
+ 50 nodes - Booking 
+ 30 nodes - avl 
+ 20 nodes - security 
+ 10 nodes - monitoring 
+ 50 nodes - AI/ML based app 
+ 
+ Node Configuration with the Machine Configuration Operator
+ MCO 
+ MCC - MCO 
+ MCS 
+ 
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+

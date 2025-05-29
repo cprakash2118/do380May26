@@ -1,0 +1,60 @@
+#Unit-1 - Authentication and Identity Management
+- The OpenShift OAuth Server and Identity Providers - htpasswd 
+- LDAP Authentication and Group Synchronization 
+- Automate LDAP Group Synchronization 
+- OIDC Authentication and Group Claims 
+- Solve User Sync Conflicts 
+- Token and Client Certificate Authentication with kubeconfig Files 
+
+
+#Unit-2 - Backup, Restore, and Migration of Applications with OADP
+-  Export and Import Application Data and Settings 
+- OADP Operator Deployment and Features 
+- Backup and Restore with OADP 
+
+#Unit-3 - Cluster Partitioning (MachineConfig)
+- Node Pools 
+- Node Configuration with the Machine Configuration Operator 
+- Node Configuration with Special Purpose Operators 
+
+#Unit-4 - Pod Scheduling
+- Pod Scheduling Concepts 
+- Pod Scheduling Scenarios 
+- Node Selectors and Taints 
+- High Availability with Affinity Rules and Pod Disruption Budgets 
+
+Default pod placement:-
+1-) k8s looking for node - less CPU, RAM, Staorage, port utilization ;; refer label-selector, taint-torelation , afinity/anti-afinity rules.
+2-) Ranking provided by k8s algo to all above listed nodes.
+    Eg: worker01=77 ; worker02=88 ; worker03=23 ..
+3-) Get the best node by sorting.
+
+ 1core=1000m 
+ 1 core = CPU 
+ CPU = socket * COre-pre-Socket * Thread-per-COre 
+ 
+###############
+Unit-5# OpenShift GitOps:-
+ - The Red Hat OpenShift GitOps Operator - installed [ via CLI/WebConsole - Operator HUB ]
+   namespace
+   - openshift-gitops            [argo CD application deployed ; via route ]
+   - openshift-gitops-operator
+
+
+Unit-6:- OpenShift Monitoring
+- Cluster Monitoring 
+- Alerts and Notifications
+
+
+
+ BUCKET_HOST=$(oc get -n openshift-logging configmap loki-bucket-odf -o jsonpath='{.data.BUCKET_HOST}'); BUCKET_NAME=$(oc get -n openshift-logging configmap loki-bucket-odf -o jsonpath='{.data.BUCKET_NAME}'); BUCKET_PORT=$(oc get -n openshift-logging configmap loki-bucket-odf -o jsonpath='{.data.BUCKET_PORT}'); ACCESS_KEY_ID=$(oc get -n openshift-logging secret loki-bucket-odf -o jsonpath='{.data.AWS_ACCESS_KEY_ID}' | base64 -d); SECRET_ACCESS_KEY=$(oc get -n openshift-logging secret loki-bucket-odf -o jsonpath='{.data.AWS_SECRET_ACCESS_KEY}' | base64 -d)
+
+
+oc create secret generic logging-loki-odf -n openshift-logging --from-literal=access_key_id=${ACCESS_KEY_ID} --from-literal=access_key_secret=${SECRET_ACCESS_KEY} --from-literal=bucketnames=${BUCKET_NAME} --from-literal=endpoint=https://${BUCKET_HOST}:${BUCKET_PORT}
+
+
+
+
+ 
+
+
