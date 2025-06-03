@@ -1,0 +1,419 @@
+    1  uptime 
+    2  lab start auth-review 
+    3  oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+    4  oc login -u admin -p redhat https://api.ocp4.example.com:6443
+    5  oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+    6  oc login -u kubeadmin -p qNCUi-7NyEm-FRk76-CwFtW https://api.ocp4.example.com:6443
+    7  nslookup api.ocp4.example.com
+    8  ssh 192.168.50.254
+    9  oc get nodes
+   10  oc get nodes -o wide 
+   11  oc status 
+   12  oc get pods -n openshift-console 
+   13  oc get route -n openshift-console 
+   14  #https://console-openshift-console.apps.ocp4.example.com
+   15  oc whoami --show-console 
+   16  rount -n 
+   17  nslookup quay.io 
+   18  nslookup registry.redhat.io
+   19  nslookup registry.access.redhat.com 
+   20  #htpasswd -c -B -b htpasswd-upload-file user1 password 
+   21  mkdir work 
+   22  cd work/
+   23  htpasswd -c -B -b htpasswd-upload-file user1 password 
+   24  cat htpasswd-upload-file 
+   25  htpasswd -B -b htpasswd-upload-file user2 password
+   26  htpasswd -B -b htpasswd-upload-file user3 password
+   27  htpasswd -B -b htpasswd-upload-file user4 password
+   28  htpasswd -B -b htpasswd-upload-file user5 password
+   29  htpasswd --help 
+   30  cat htpasswd-upload-file 
+   31  oc create secret generic htpasswd-secret-devops --from-file htpasswd=htpasswd-upload-file -n openshift-config
+   32  oc get secret -n openshift-config
+   33  oc get oauth/cluster -o yaml > oauth.yaml 
+   34  vim oauth.yaml 
+   35  oc apply -f oauth.yaml 
+   36  watch oc get pods -n openshift-config 
+   37  watch oc get pods -n openshift-authentication
+   38  watch oc get pods -n openshift-authentication -o wide 
+   39  oc login -u user1 -p password https://api.ocp4.example.com:6443 
+   40  oc whoami
+   41  for x in {1..5}; do oc login -u user$x -p password https://api.ocp4.example.com:6443; done
+   42  oc login -u kubeadmin -p qNCUi-7NyEm-FRk76-CwFtW https://api.ocp4.example.com:6443
+   43  oc get users 
+   44  vim oauth.yaml 
+   45  history 
+   46  oc login -u user1 -p password 
+   47  oc whoami 
+   48  oc get nodes
+   49  oc login -u kubeadmin -p qNCUi-7NyEm-FRk76-CwFtW https://api.ocp4.example.com:6443
+   50  oc adm policy add-cluster-role-to-user cluster-admin user1 
+   51  oc login -u user1 -p password 
+   52  oc whoami 
+   53  oc get nodes
+   54  oc extract secret/htpasswd-secret-devops --to=. -n openshift-config 
+   55  ll
+   56  cat htpasswd
+   57  htpasswd -B -b htpasswd user1 redhat
+   58  cat htpasswd
+   59  oc set data --help |less
+   60  # oc set data configmap/bar --from-file=../haproxy.conf
+   61  oc set data secret/htpasswd-secret-devops --from-file htpasswd=htpasswd -n openshift-config 
+   62  watch oc get pods -n openshift-authentication -o wide 
+   63  htpasswd 
+   64  oc login -u user1 -p password 
+   65  oc login -u user1 -p redhat
+   66  oc get nodes
+   67  cat ~/.kube/config 
+   68  oc whoami -t 
+   69  oc logout 
+   70  oc whoami -t 
+   71  cat ~/.kube/config 
+   72  oc login -u user1 -p redhat
+   73  oc whoami -t 
+   74  oc whoami
+   75  cat ~/.kube/config 
+   76  cd
+   77  ls -l .kube/config 
+   78  oc whoami 
+   79  oc whoami --loglevel 7
+   80  mv .kube /tmp/
+   81  oc get nodes 
+   82  ssh 192.168.50.254 
+   83  ll
+   84  oc get nodes 
+   85  oc get nodes --kubeconfig /home/student/kubeconfig
+   86  oc whaomi --kubeconfig /home/student/kubeconfig
+   87  oc whami --kubeconfig /home/student/kubeconfig
+   88  oc whoami --kubeconfig /home/student/kubeconfig
+   89  oc whoami -t --kubeconfig /home/student/kubeconfig
+   90  oc logout --kubeconfig /home/student/kubeconfig
+   91  vim kubeconfig
+   92  oc get nodes
+   93  env | grep KUBE
+   94  export KUBECONFIG=/home/student/kubeconfig
+   95  env | grep KUBE
+   96  oc get nodes
+   97  oc whoami 
+   98  oc whoami -t
+   99  oc logout 
+  100  unset KUBECONFIG
+  101  env | grep KUBE
+  102  oc whoami -t
+  103  cp -rpv kubeconfig ~/.kube/config
+  104  oc get nodes
+  105  mv .kube /var/tmp/
+  106  oc get nodes
+  107  oc get secret keubadmin -n kube-system 
+  108  oc login -u user1 -p redhat
+  109  oc login -u user1 -p redhat https://api.ocp4.example.com:6443 
+  110  oc get secret keubadmin -n kube-system 
+  111  oc get secret keubadmin -n system-kube 
+  112  oc projects | grep kube 
+  113  oc get secret kubeadmin -n  kube-system 
+  114  oc delete secret kubeadmin -n  kube-system 
+  115  oc get secret kubeadmin -n  kube-system 
+  116  hostname -f
+  117  hostname -d
+  118  hostname -s
+  119  whoami 
+  120  sudo su - 
+  121  ssh uitlity -l root 
+  122  ssh uiitlity -l root 
+  123  ssh utility -l root 
+  124  oc whoami 
+  125  oc login -u user1 -p redhat https://api.ocp4.example.com:6443 
+  126  nslookup api.ocp4.example.com
+  127  ssh api.ocp4.example.com
+  128  oc login -u user1 -p redhat https://api.ocp4.example.com:6443 
+  129  uptime 
+  130  oc get nodes
+  131  oc get oauth cluster -o yaml 
+  132  cat /etc/redhat-release 
+  133  cat /etc/rht
+  134  oc whoami 
+  135  oc whoami --show-console 
+  136  oc get oauth cluster -o yaml 
+  137  lab start auth-ldap
+  138  watch oc get pods -n openshift-authentication -o wide 
+  139  oc get oauth cluster -o yaml 
+  140  mkdir work 
+  141  mkdir work2
+  142  cd work2/
+  143  oc get secret ldap-bind-password-jvfxz -n openshift-config 
+  144  oc get secret ldap-bind-password-jvfxz -n openshift-config -o yaml > mysecret.yaml 
+  145  oc get configmaps ldap-ca-sbjcv -n openshift-config -o yaml > mycm.yaml 
+  146  ll
+  147  oc get oauth cluster -o yaml > oauth.yaml 
+  148  ll
+  149  oc get oauth cluster -o yaml 
+  150  ll
+  151  vim mysecret.yaml 
+  152  vim mycm.yaml 
+  153  vim oauth.yaml 
+  154  oc get pods 
+  155  watch oc get pods -n openshift-authentication -o wide 
+  156   oc get pods -n openshift-authentication -o wide 
+  157  ll
+  158  oc create -f mysecret.yaml --save-config 
+  159  oc create -f mycm.yaml --save-config 
+  160  oc apply -f oauth.yaml 
+  161   oc get pods -n openshift-authentication -o wide 
+  162  wtach  oc get pods -n openshift-authentication -o wide 
+  163  watch  oc get pods -n openshift-authentication -o wide 
+  164  oc login -u kristendelgado -p redhat123 https://api.ocp4.example.com:6443 
+  165  oc login -u user1 -p redhat https://api.ocp4.example.com:6443 
+  166  oc adm policy add-cluster-role-to-user cluster-admin kristendelgado
+  167  cat oauth.yaml 
+  168  oc adm groups new acme-corp
+  169  oc get groups
+  170  oc adm policy add-cluster-role-to-group cluster-reader acme-corp
+  171  oc get groups
+  172  oc describe clusterrolebindings |less 
+  173   mkdir acme
+  174  cd acme/
+  175  pwd
+  176  ll
+  177  openssl req -newkey rsa:4096 -nodes -keyout tls.key -subj "/O=acme-crop/CN=acme-auditor" -out acme-auditor-auth.csr
+  178  ll
+  179   base64 -w0 acme-auditor-auth.csr;echo 
+  180  vim acme-auditor-auth.csr
+  181  cat acme-cert-sign-request.yaml 
+  182  ll
+  183  oc explain csr |less
+  184  cat acme-cert-sign-request.yaml 
+  185  vim acme-cert-sign-request.yaml 
+  186  oc explain csr |less
+  187  vim acme-cert-sign-request.yaml 
+  188  oc explain csr.spec.signerName
+  189  oc explain csr.spec.signerName |less
+  190  vim acme-cert-sign-request.yaml 
+  191  oc explain csr.spec.signerName |less
+  192  vim acme-cert-sign-request.yaml 
+  193  base64 -w0 acme-auditor-auth.csr;echo
+  194  (base64 -w0 acme-auditor-auth.csr;echo) >> acme-cert-sign-request.yaml
+  195  vim acme-cert-sign-request.yaml
+  196  oc get csr
+  197  oc create -f acme-cert-sign-request.yaml
+  198  oc get csr
+  199  acme-cert-sign-reqoc adm certificate approve acme-cert-sign-req
+  200  oc adm certificate approve acme-cert-sign-req
+  201  oc get csr
+  202  oc get csr acme-cert-sign-req -o jsonpath='{.status.certificate}' | base64 -d >acme-cert-sign-req-access.crt
+  203  ls
+  204  ls -lrth 
+  205  oc config --kubeconfig acme-corp.config set-credentials acme-auditor --client-certificate acme-cert-sign-req-access.crt --client-key tls.key --embed-certs
+  206  ls -lrth 
+  207  cat acme-corp.config 
+  208  cat acme-corp.config  |less
+  209  oc config view
+  210  openssl s_client -showcerts -connect api.ocp4.example.com:6443 < /dev/null 2>/dev/null|openssl x509 -outform PEM >ocp-apiserver-cert.crt
+  211  ls 
+  212  ls -lrth 
+  213  oc config --kubeconfig acme-corp.config set-cluster api-ocp4-example-com:6443 --certificate-authority ocp-apiserver-cert.crt --embed-certs=true --server https://api.ocp4.example.com:6443 
+  214  ls -lrth 
+  215  vim acme-corp.config 
+  216   oc config --kubeconfig acme-corp.config set-context acme-auditor --cluster api-ocp4-example-com:6443 --namespace default --user acme-auditor 
+  217  vim acme-corp.config 
+  218  oc config use-context acme-auditor --kubeconfig acme-corp.config 
+  219  oc whoami 
+  220  oc whoami -t 
+  221  oc whoami --kubeconfig acme-corp.config
+  222  export KUBECONFIG=/home/student/work2/acme/acme-corp.config 
+  223  env | grep KUBE
+  224  oc whoami 
+  225  unset KUBECONFIG
+  226  oc whoami 
+  227  oc get nodes
+  228  oc --help |less
+  229  uptime 
+  230  oc whaami 
+  231  oc whoami 
+  232  oc get nodes
+  233  oc describe clusterrolebindings |less
+  234  lab start backup-restore
+  235   oc project database
+  236  oc get pods
+  237  oc get  pvc,svc,deployment,secret,configmap -l app=mariadb
+  238  oc project -q 
+  239  oc get namespace database -oyaml
+  240  cd ~/DO380/labs/backup-restore
+  241  pwd
+  242  ll
+  243  vim backup-db-manual.yml
+  244   oc apply -f backup-db-manual.yml
+  245   alias velero='oc -n openshift-adp exec deployment/velero -c velero -it -- ./velero'
+  246  oc rsh velero -n openshift-abd 
+  247  oc projects | grep ddb 
+  248  oc projects | grep adb 
+  249  oc projects | grep abd
+  250  oc projects | grep adp
+  251  oc project openshift-adp
+  252  oc get pods
+  253  oc get pods -o wide 
+  254  oc rsh velero-69d7d5b97c-2gsc9 
+  255  which vlero 
+  256  which velero 
+  257  velero get backup 
+  258  velero describe  backup 
+  259  velero get backup 
+  260  oc get og,ip,sub,csv -n openshift-adp
+  261  oc get deployment -n openshift-adp
+  262  oc get daemonsets.apps -n openshift-adp
+  263  velero describe backup db-manual | grep -i namespace
+  264  velero get backup openshift-adp | grep -i namespace -A 3
+  265  velero get backup openshift-adp | grep  -i namespace -A 3
+  266  velero get backup db-manual | grep  -i namespace -A 3
+  267  velero describe backup db-manual
+  268  velero get backup 
+  269  ll
+  270  vim restore-db-crash.yml
+  271  oc projects | grep database-crash
+  272  vim restore-db-crash.yml
+  273  oc projects | grep database
+  274  oc project -q 
+  275  velero get backup
+  276  velero get restore
+  277  vim restore-db-crash.yml
+  278  oc apply -f restore-db-crash.yml 
+  279  velero get restore
+  280  watch velero get restore
+  281  velero get restore
+  282  cat restore-db-crash.yml 
+  283  oc projects | grep database-crash
+  284  oc project database-crash
+  285  oc get pods
+  286  oc get namespace database-crash -oyaml
+  287  ll
+  288  cp -rpv restore-db-crash.yml restore-ex380v414.yml
+  289  vim restore-ex380v414.yml
+  290  oc delete project database 
+  291  oc whoami 
+  292  oc login -u user1 -p redhat https://api.ocp4.example.com:6443 
+  293  oc delete project database 
+  294  cat restore-db-crash.yml
+  295  oc delete project database-crash
+  296  velero get backup 
+  297  velero get restore
+  298  velero delete restore db-crash
+  299  velero get restore
+  300  velero get backup 
+  301  ll
+  302  ls -lrth 
+  303  oc projects | grep database 
+  304  cat restore-ex380v414.yml
+  305  oc apply -f restore-ex380v414.yml 
+  306  velero get restore 
+  307  oc projects | grep data
+  308  oc project database
+  309  oc get all
+  310  oc get pvc
+  311  oc get cm
+  312  oc get secret 
+  313  oc get pods
+  314  oc delete pod mariadb-95d4f784-vdw74
+  315  oc get pods
+  316  oc create serviceaccount app-sa 
+  317  oc get scc 
+  318  #privileged
+  319  oc get pods 
+  320  oc get sa
+  321  oc adm policy add-scc-to-user privileged -z app-sa 
+  322  oc get deployment mariadb -o yaml | grep -i service 
+  323  oc set serviceaccount deployment mariadb app-sa 
+  324  oc get deployment mariadb -o yaml | grep -i service 
+  325  oc get pods
+  326  oc delete pod mariadb-79d9d57768-p5cxs
+  327  oc get pods
+  328  oc whoami 
+  329  oc login -u admin -p redhatocp https://api.ocp4.example.com:6443 
+  330  oc login -u user1 -p redhat123 https://api.ocp4.example.com:6443 
+  331  uptime 
+  332  ll
+  333  history  | grep login 
+  334  oc login -u kubeadmin -p qNCUi-7NyEm-FRk76-CwFtW https://api.ocp4.example.com:6443
+  335   oc login -u user1 -p redhat https://api.ocp4.example.com:6443
+  336  oc new-project demo-q6 
+  337  oc new-app --name test httpd:2.4 
+  338  oc get pods 
+  339  oc project -q 
+  340  oc get pods
+  341  oc scale --replicas=5 deployment test 
+  342  oc get pods
+  343  oc get hpa 
+  344  oc autoscale --help |less
+  345  #oc autoscale rc foo --max=5 --cpu-percent=80
+  346  oc autoscale deployment test --max=6 --min=3 --cpu-percent=80
+  347  oc get hpa
+  348  oc set resources --help |less
+  349  #oc set resources deployment nginx --limits=cpu=200m,memory=512Mi --requests=cpu=100m,memory=256Mi
+  350  oc set resources deployment test --limits=cpu=180m --requests=cpu=25m
+  351  oc get pods
+  352  c get pods:
+  353  oc describe pod test-7d7b456f4c-4p9l7 |less
+  354  oc get hpa 
+  355  mkdir work 
+  356  mkdir ex280
+  357  cd ex280/
+  358  pwd
+  359  ll
+  360  openssl genrsa -out ex280.key 2048
+  361  ll
+  362  openssl req -new -key ex280.key -out ex280.csr -subj "/C=IN/ST=Karnataka/L=Bangalore/O=Security/OU=IT 
+
+  363  openssl req -new -key ex280.key -out ex280.csr -subj "/C=IN/ST=Karnataka/L=Bangalore/O=Security/OU=IT Department/CN=q10.apps.example.com"
+  364  ls
+  365  ll
+  366  openssl x509 -req -in ex280.csr -signkey ex280.key -out ex280.crt
+  367  ll
+  368  #oc create route edge edge-httpd --service 
+  369  oc get svc 
+  370  oc create route edge edge-httpd --service test --cert ex280.crt --key ex280.key --hostname q10.apps.example.com
+  371  oc get route 
+  372  oc delete routes.route.openshift.io edge-httpd 
+  373  oc create route edge edge-httpd --service test --cert ex280.crt --key ex280.key --hostname q10.apps.ocp4.example.com
+  374  oc get route 
+  375  oc create secret generic magic --from-literal DECORDER_RING=1289371246hassbkjdashkjdka12u3\
+  376  oc create secret generic magic --from-literal DECORDER_RING=1289371246hassbkjdashkjdka12u3
+  377  oc get pods
+  378  oc set env --help |less
+  379  #oc set env --from=secret/mysecret dc/myapp
+  380  oc set env --from secret/magic deployment/test 
+  381  oc get pods
+  382  oc rsh test-6975cbf575-8kc7x 
+  383  oc new-project demo14
+  384  oc new-app --name app quay.io/cprakash2118/april-java-unzip-httpd-image-02
+  385  oc get pods 
+  386  oc logs  app-ff855579c-n869g 
+  387  oc create sa app-sa 
+  388  oc adm policy add-scc-to-user anyuid -z app-sa 
+  389  oc get scc 
+  390  oc explain scc |less
+  391  oc get pods
+  392  oc logs  app-ff855579c-n869g 
+  393  oc set sa deployment app app-sa 
+  394  oc get pods
+  395  oc describe svc 
+  396  oc edit svc 
+  397  oc describe svc 
+  398  oc get pods
+  399  oc get route 
+  400  oc expose service app 
+  401  oc get route 
+  402  oc describe svc 
+  403  oc edit service
+  404  oc describe svc 
+  405  oc get pods
+  406  oc set resources deployment app --requests=memory=80Gi
+  407  oc get pods
+  408  oc describe app-6d5df8b4d-h8ltv
+  409  oc get pods
+  410  oc describe pod  app-6d5df8b4d-h8ltv
+  411  oc get deployment app -o yaml
+  412  oc get deployment app -o yaml | grep -i memo
+  413  oc get deployment app -o yaml | grep -i -A 3 -B -3 memo
+  414  oc get deployment app -o yaml | grep -i -A 3 -B 3 memo
+  415  oc set resources deployment app --requests=memory=512Mi
+  416  oc get deployment app -o yaml | grep -i -A 3 -B 3 memo
+  417  oc get pods
+  418  history > history.txt 
